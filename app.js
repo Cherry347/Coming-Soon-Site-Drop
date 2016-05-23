@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
 // Routes \\
-var indexController = require('./controllers/indexController')
+// var indexController = require('./controllers/indexController')
 
 app.get('/', function(req, res){
   res.sendFile('/html/index.html', {root : './public'})
