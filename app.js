@@ -1,26 +1,27 @@
 var express = require('express');
-var bodyParser = require('body-parser');
-var logger = require('morgan');
-
-
-var app = express();
-
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(__dirname + '/public'));
-
-// Routes \\
-// var indexController = require('./controllers/indexController')
+var app     = express();
+var http    = require('http');
+var https   = require('https');
+var fs      = require('fs');
 
 app.get('/', function(req, res){
-  res.sendFile('/html/index.html', {root : './public'})
+    console.log('someone visited the home page!');
 });
+var httpServer = http.createServer(app);
+httpServer.listen(80);
 
+// HTTPS Setup //
+try {
 
-// Creating Server and Listening for Connections \\
-var port = 80
-app.listen(port, function(){
-  console.log('Server running on port ' + port);
+    var credentials = {
+      key: fs.readFileSync('/etc/letsencrypt/live/thepasswordisdragons.com/privkey.pem'),
+      cert: fs.readFileSync('/etc/letsencrypt/live/thepasswordisdragons.com/cert.pem')
+    };
 
-});
+    https.createServer(credentials, app).listen(443);
+}
+catch(error){
+    console.log('HTTPS setup failed.');
+    console.log('=-=-=-=-=-=-=-=-=-=-=');
+    console.log(error);
+}
